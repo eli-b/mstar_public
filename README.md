@@ -31,3 +31,5 @@ Note: libgtest must be made manually.  This requires cmake.  Then run
 * `sudo cmake .`
 * `sudo make`
 * `sudo mv libg* /usr/lib/`
+
+Note: The cbs, mstar, and utils python dirs should be added to PYTHONPATH
