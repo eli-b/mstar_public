@@ -27,30 +27,30 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
                  offset_increment=1.0):
         '''
         obs_map     - obstacle map, matrix with 0 for free, 1 for obstacle
-        goals       - ((x1,y1),(x2,y2),...) coordinates of the goal, should be 
+        goals       - ((x1,y1),(x2,y2),...) coordinates of the goal, should be
                        tuples
         constraints - cbs_constraints for the group of robots for which to plan
                        all robots must be included
         heuristic_conf - ((x1,y1),(x2,y2),...) initial position to be used
-                          for the heuristic for the constrained policy 
+                          for the heuristic for the constrained policy
                           generation code
         recursive   - True for rM*, false for basic M*
-        sub_search  - Sub planners, should be None for the full configuration 
+        sub_search  - Sub planners, should be None for the full configuration
                        space
         out_paths   - [[[x1,y1],[x2,y2],..],[[x12,y12],[x22,y22],..],...] paths
                       of out of group robots to avoid
         col_checker - object to handle robot-robot collision checking.  Should
-                       implement the same interface as 
+                       implement the same interface as
                        workspace_graph.Edge_Checker
-        rob_id      - maps local robot identity to full configuration space 
-                       identity, should be None for the full configuration 
+        rob_id      - maps local robot identity to full configuration space
+                       identity, should be None for the full configuration
                        space instance
         inflation   - how much the metric should be inflated by
         end_time    - when the search should be terminated
         conn_8      - True for 8 connected graph, False for 4 connected graph
         astar       - use basic A* instead of operator decomposition
         full_space  - whether to perform a full configuration space search
-        flood_fill_policy - compute policy with flood fill instead of 
+        flood_fill_policy - compute policy with flood fill instead of
                              resumable A*
         epeastar    - Use EPEA* instead of A* or OD to search the graph, default
                       False
@@ -63,14 +63,14 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
         self.max_t = 0
         self.con_max_t = 0
         self.constraints = constraints
-        if self.constraints != None:
+        if self.constraints is not None:
             self.max_t = max(cbs.con_get_max_time(constraints) + 1, 0)
             if self.max_t == 1:
                 # only possible if the constraint occurs at time 0,
                 # which is meaningless
                 self.max_t = 0
             self.con_max_t = self.max_t
-        if self.out_paths != None:
+        if self.out_paths is not None:
             self.max_t = max(self.max_t, len(self.out_paths))
         self.rob_id = cbs.con_get_robots(self.constraints)
         self.heuristic_conf = heuristic_conf
@@ -109,17 +109,17 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
         self.policy_keys = tuple((cbs.con_subset_robots(self.constraints, (i,)),
                                   self.path_hash) for i in self.rob_id)
         self.sub_search = sub_search
-        if self.sub_search == None:
+        if self.sub_search is None:
             self.sub_search = {}
         for dex, key in enumerate(self.policy_keys):
-            if not key in self.sub_search:
+            if key not in self.sub_search:
                 self.sub_search[key] = constrained_planner.Constrained_Planner(
                     obs_map, self.heuristic_conf[dex], self.goals[dex], key[0],
                     out_paths=self.out_paths, sub_search=self.sub_search,
                     conn_8=self.conn_8, inflation=self.inflation)
 
     def solution_condition(self, node):
-        '''boolean function determining whether nod eis an acceptable 
+        '''boolean function determining whether nod eis an acceptable
         solution'''
         if node.forwards_ptr == node:
             # Have already found a path from here
@@ -136,7 +136,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
         return True
 
     def heuristic(self, coord, standard_node):
-        '''Returns the heuristic value, takes in a time value to allow for     
+        '''Returns the heuristic value, takes in a time value to allow for
         time dependent heuristics'''
         cost = 0
         out_col = 0
@@ -169,7 +169,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
         return node
 
     def gen_init_nodes(self, init_pos):
-        '''Generates the first node at which search starts.  Needed for 
+        '''Generates the first node at which search starts.  Needed for
         allowing changes in the structure of the cost function'''
         first_nodes = od_mstar.Od_Mstar.gen_init_nodes(self, init_pos)
         for node in first_nodes:
@@ -199,7 +199,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
                     for g in global_col]
         # generate the sub planners, if necessary
         for dex, key in enumerate(sub_keys):
-            if not key in self.sub_search:
+            if key not in self.sub_search:
                 t_goals = tuple([self.non_time_goals[k] for k in col_set[dex]])
                 t_init = tuple([self.heuristic_conf[k] for k in col_set[dex]])
                 self.sub_search[key] = self.create_sub_search(
@@ -207,7 +207,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
         return sub_keys
 
     def epeastar_transition_cost(self, start_coord, prev_cost, new_coord):
-        '''Computes the cost of a new node at the specified coordinates, 
+        '''Computes the cost of a new node at the specified coordinates,
         starting from the given position and cost
 
         '''
@@ -218,7 +218,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
             if not (start_coord[i][:-1] == self.goals[i][:-1] and
                     start_coord[i][:-1] == new_coord[i][:-1]):
                 cost += 1
-        if self.out_paths != None:
+        if self.out_paths is not None:
             for dex in range(len(new_coord)):
                 if self.col_checker.single_bot_outpath_check(
                         new_coord[dex], start_coord[dex], t, self.out_paths):
@@ -240,7 +240,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
                 neighbor[1] == self.goals[rob_dex][1]):
             cost += od_mstar.PER_ROBOT_COST
         cols = prev_cost[1]
-        if self.out_paths != None:
+        if self.out_paths is not None:
             if self.col_checker.single_bot_outpath_check(
                     neighbor, start_coord[rob_dex], neighbor[-1], self.out_paths):
                 cols += 1
@@ -264,7 +264,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
                     start_coord[i][0] == new_coord[i][0] and
                     start_coord[i][1] == new_coord[i][1]):
                 cost += 1
-        if self.out_paths != None:
+        if self.out_paths is not None:
             for dex in range(len(new_coord)):
                 if self.col_checker.single_bot_outpath_check(
                         new_coord[dex], start_coord[dex], t, self.out_paths):
@@ -272,7 +272,7 @@ class Constrained_Od_Mstar(od_mstar.Od_Mstar):
         return (cost, cols)
 
     def find_path(self, init_pos, time_limit=5 * 60):
-        '''Finds a path from the specified configuration in space-time to the 
+        '''Finds a path from the specified configuration in space-time to the
         goal
         init_pos - ((x,y,t),(x,y,t),...) space time initial configuration
         time_limit - maximum time for planning'''
@@ -391,10 +391,10 @@ class SumOfCosts_Constrained_EPErMstar(Constrained_Od_Mstar):
         self.policy_keys = tuple((cbs.con_subset_robots(self.constraints, (i,)),
                                   self.path_hash) for i in self.rob_id)
         self.sub_search = sub_search
-        if self.sub_search == None:
+        if self.sub_search is None:
             self.sub_search = {}
         for dex, key in enumerate(self.policy_keys):
-            if not key in self.sub_search:
+            if key not in self.sub_search:
                 self.sub_search[key] = (
                     constrained_planner.SumOfCosts_Constrained_Planner(
                         obs_map, self.heuristic_conf[dex], self.goals[dex],
@@ -442,7 +442,7 @@ class SumOfCosts_Constrained_EPErMstar(Constrained_Od_Mstar):
             epeastar=self.epeastar, offset_increment=self.offset_increment)
 
     def epeastar_transition_cost(self, start_coord, prev_cost, new_coord):
-        '''Computes the cost of a new node at the specified coordinates, 
+        '''Computes the cost of a new node at the specified coordinates,
         starting from the given position and cost
 
         '''
@@ -464,7 +464,7 @@ class SumOfCosts_Constrained_EPErMstar(Constrained_Od_Mstar):
             else:
                 at_goals.append(full_time)
                 cost += full_time
-        if self.out_paths != None:
+        if self.out_paths is not None:
             for dex in range(len(new_coord)):
                 if self.col_checker.single_bot_outpath_check(
                         new_coord[dex], start_coord[dex], t, self.out_paths):
@@ -503,7 +503,7 @@ class SumOfCosts_Constrained_EPErMstar(Constrained_Od_Mstar):
             else:
                 at_goals.append(full_time)
                 cost += full_time
-        if self.out_paths != None:
+        if self.out_paths is not None:
             for dex in range(len(new_coord)):
                 if self.col_checker.single_bot_outpath_check(
                         new_coord[dex], start_coord[dex], t, self.out_paths):

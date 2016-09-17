@@ -430,8 +430,7 @@ def gen_plots(source_name, dest_name, large_format=False, plot_mem=False):
         pylab.rcParams.update(params)
     print 'Loading data'
     dat = cPickle.load(open(source_name))
-    bot_numbers = list(set(map(lambda x: len(x['init_pos']), dat)))
-    bot_numbers.sort()
+    bot_numbers = sorted(set(map(lambda x: len(x['init_pos']), dat)))
     print 'Finished pickling'
 
     def foo(x):

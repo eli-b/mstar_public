@@ -76,7 +76,7 @@ def gen_coverage_world(size, num_bots, obs_density, connect_8=False):
         # Check if we can generate a valid path
         graph = workspace_graph.Astar_Graph(obs_map, g, connect_8=connect_8)
         tpath = graph.get_step(ip)
-        if tpath == None or tpath == []:
+        if tpath is None or tpath == []:
             # No individual path, so skip
             if counter > max_tries:
                 # obs_map is too hard, try a new one
@@ -185,7 +185,7 @@ def gen_dragon_age_map(filename, num_bots):
         # Check if we can generate a valid path
         graph = workspace_graph.Astar_Graph(obs_map, g)
         tpath = graph.get_step(ip)
-        if tpath == None or tpath == []:
+        if tpath is None or tpath == []:
             # No individual path, so skip
             if counter > max_tries:
                 # obs_map is too hard, try a new one
@@ -250,13 +250,13 @@ def main(argv=sys.argv):
             elif arguments.world_size is not None:
                 size = arguments.world_size
                 assert(size > 0)
-            if arguments.dragon_age != None:
+            if arguments.dragon_age is not None:
                 world_args.append([arguments.dragon_age, num_robots])
             else:
                 world_args.append([size, num_robots, arguments.coverage])
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
     worlds = None
-    if arguments.dragon_age != None:
+    if arguments.dragon_age is not None:
         worlds = pool.map(dragon_age_map_wrapper, world_args)
     else:
         worlds = pool.map(world_wrapper, world_args)

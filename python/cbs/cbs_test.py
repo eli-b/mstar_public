@@ -67,7 +67,7 @@ class TestCBSConstraintFunctions(unittest.TestCase):
         self.assertTrue(cbs.con_get_robots(temp) == (1, 2))
 
     def test_constraint_sorting(self):
-        """Constraint object should be independent of order of constraint 
+        """Constraint object should be independent of order of constraint
         addition
 
         """
@@ -447,7 +447,7 @@ class TestForwardsConstraintPlanner(unittest.TestCase):
         self.assertTrue(not (1, 0) in path)
 
     def test_constraint_delay(self):
-        """Tests that the constrained planner will plan beyond the 
+        """Tests that the constrained planner will plan beyond the
         constraint
         """
         # Test with an irrelevant constraint
@@ -468,7 +468,7 @@ class TestForwardsConstraintPlanner(unittest.TestCase):
         self.assertTrue(cost == 3)
 
     def test_tie_breaking(self):
-        """Tests that Constrained_Forwards_Planner performs tie breaking 
+        """Tests that Constrained_Forwards_Planner performs tie breaking
         properly
 
         """
@@ -557,11 +557,11 @@ class TestPathValidation(unittest.TestCase):
         p1 = map(lambda x: (x, ), ((0, 0), (0, 1), (0, 2), (0, 3), (0, 4)))
         p2 = map(lambda x: (x, ), ((0, 3), (0, 2), (0, 3), (1, 3), (2, 3)))
         new_cons = cbs.validate_path_pair(p1, (1, ), p2, (2, ))
-        self.assertTrue(new_cons == None)
+        self.assertTrue(new_cons is None)
         p1 = map(lambda x: (x, ), ((0, 0), (0, 1), (0, 2), (0, 3), (0, 4)))
         p2 = map(lambda x: (x, ), ((0, 5), ))
         new_cons = cbs.validate_path_pair(p1, (1, ), p2, (2, ))
-        self.assertTrue(new_cons == None)
+        self.assertTrue(new_cons is None)
 
     def test_single_bots_simultaneous(self):
         """Tests to make sure simultaneous occupation is detected"""
@@ -600,7 +600,7 @@ class TestPathValidation(unittest.TestCase):
         p1 = map(list, zip(p11, p12))
         p2 = map(lambda x: (x, ), ((0, 3), (0, 2), (0, 3), (1, 3), (2, 3)))
         new_cons = cbs.validate_path_pair(p1, (1, 3), p2, (2, ))
-        self.assertTrue(new_cons == None)
+        self.assertTrue(new_cons is None)
 
     def test_meta_agent_simultaneous(self):
         """tests meta_agents for simultaneous occupation"""
@@ -622,12 +622,12 @@ class TestPathValidation(unittest.TestCase):
                   (0, 0)]:
             path2 = map(lambda x: (x, ), ((0, 1), i))
             con = cbs.validate_path_pair(path1, ((1, )), path2, ((2, )))
-            self.assertTrue(con == None)
+            self.assertTrue(con is None)
         path1 = map(lambda x: (x, ), ((0, 0), (1, 1)))
         for i in [(0, 1), (1, 2), (0, 2), (-1, 2), (-1, 1), (-1, 0), (0, 0)]:
             path2 = map(lambda x: (x, ), ((0, 1), i))
             con = cbs.validate_path_pair(path1, ((1, )), path2, ((2, )))
-            self.assertTrue(con == None)
+            self.assertTrue(con is None)
 
     def test_8_conn_validation_true_positive(self):
         """test that cross over events are detected"""
@@ -635,25 +635,25 @@ class TestPathValidation(unittest.TestCase):
         for i in [((0, 1), (1, 0)), ((1, 0), (0, 1))]:
             path2 = map(lambda x: (x, ), i)
             con = cbs.validate_path_pair(path1, ((1, )), path2, ((2, )))
-            self.assertTrue(con != None)
+            self.assertTrue(con is not None)
 
         for i in [((-1, 0), (0, 1)), ((0, 1), (-1, 0))]:
             path1 = map(lambda x: (x, ), ((0, 0), (-1, 1)))
             path2 = map(lambda x: (x, ), i)
             con = cbs.validate_path_pair(path1, ((1, )), path2, ((2, )))
-            self.assertTrue(con != None)
+            self.assertTrue(con is not None)
 
         for i in [((-1, 0), (0, -1)), ((0, -1), (-1, 0))]:
             path1 = map(lambda x: (x, ), ((0, 0), (-1, -1)))
             path2 = map(lambda x: (x, ), i)
             con = cbs.validate_path_pair(path1, ((1, )), path2, ((2, )))
-            self.assertTrue(con != None)
+            self.assertTrue(con is not None)
 
         for i in [((1, 0), (0, -1)), ((0, -1), (1, 0))]:
             path1 = map(lambda x: (x, ), ((0, 0), (1, -1)))
             path2 = map(lambda x: (x, ), i)
             con = cbs.validate_path_pair(path1, ((1, )), path2, ((2, )))
-            self.assertTrue(con != None)
+            self.assertTrue(con is not None)
 
     def test_solution_validation(self):
         """tests the solution validation function"""
@@ -797,7 +797,7 @@ class TestMetaCBSPlanner(unittest.TestCase):
             self.assertTrue(cbs.compute_cost(path) == 5)
 
     def test_non_colliding_multirobot_path(self):
-        """Test that non-colliding paths do not encure additional, needless 
+        """Test that non-colliding paths do not encure additional, needless
         costs
 
         """
@@ -962,7 +962,7 @@ class TestConstrainedODrMstarPlanner(unittest.TestCase):
         self.assertTrue(p.get_path_cost() == 3)
 
     def test_non_colliding_multirobot_path(self):
-        """Test that non-colliding paths do not encure additional, needless 
+        """Test that non-colliding paths do not encure additional, needless
         costs"""
         p = constrained_od_mstar.Constrained_Od_Mstar(self.obs_map,
                                                       [[1, 1], [4, 4]],
@@ -1162,7 +1162,7 @@ class TestConstrainedEPErMstarPlanner(unittest.TestCase):
         self.assertTrue(p.get_path_cost() == 3)
 
     def test_non_colliding_multirobot_path(self):
-        """Test that non-colliding paths do not encure additional, needless 
+        """Test that non-colliding paths do not encure additional, needless
         costs"""
         p = constrained_od_mstar.Constrained_Od_Mstar(
             self.obs_map, [[1, 1], [4, 4]], [[0, 0], [3, 3]], self.empty_2con,

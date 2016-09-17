@@ -243,7 +243,7 @@ def _validate_kwargs(**kwargs):
     keywords = ['hosts', 'nworkers', 'nlocal_workers', 'depfuncs',
                 'modules', 'restart', 'cache_file', 'job_factor']
     for key in kwargs:
-        if not key in keywords:
+        if key not in keywords:
             raise TypeError('dist_map got an unexpected keyword argument \'' +
                             key + '\'')
     return True

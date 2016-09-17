@@ -441,7 +441,7 @@ class CBS_Planner(object):
         # Counts the number of collisions for determining when to merge
         self.col_count = [[0 for i in xrange(len(goals))]
                           for j in xrange(len(goals))]
-        if sub_search == None:
+        if sub_search is None:
             self.sub_search = {}
             for i in xrange(len(self.goals)):
                 self.sub_search[tuple([i])] = workspace_graph.Astar_Graph(
@@ -572,7 +572,7 @@ class CBS_Planner(object):
             for dex2, con2 in enumerate(constraints[dex1 + 1:]):
                 if (con1, con2) in self.solution_validation_results:
                     new_cons = self.solution_validation_results[(con1, con2)]
-                    if new_cons != None:
+                    if new_cons is not None:
                         return new_cons
                     continue
                 rob1 = con_get_robots(con1)
@@ -581,7 +581,7 @@ class CBS_Planner(object):
                 cost2, path2 = self.paths[con2]
                 new_cons = validate_path_pair(path1, rob1, path2, rob2)
                 self.solution_validation_results[(con1, con2)] = new_cons
-                if new_cons != None:
+                if new_cons is not None:
                     return new_cons
         return None
 
@@ -631,7 +631,7 @@ class CBS_Planner(object):
                         time_limit=time_limit - timer.time() + temp_time,
                         sum_of_costs=self.sum_of_costs)
                 if first_pass:
-                    if out_paths == None:
+                    if out_paths is None:
                         # out_paths = path
                         out_paths = tuple((x, ) for x in path)
                     else:
@@ -720,7 +720,7 @@ def permuted_cbs_find_path(
     return_cost  - whether to return the cost of the path along with the
                    path itself
 
-    returns: 
+    returns:
     path in the joint configuration graph
 
     if return_cost is true, returns path, cost
@@ -830,7 +830,7 @@ def validate_solution(solution):
              for rob in xrange(len(solution[0]))]
     for i in xrange(len(paths) - 1):
         for j in xrange(i + 1, len(paths)):
-            if validate_path_pair(paths[i], (i, ), paths[j], (j, )) != None:
+            if validate_path_pair(paths[i], (i, ), paths[j], (j, )) is not None:
                 return False
     return True
 
@@ -854,7 +854,7 @@ def interactive_validate_solution(solution):
              for rob in xrange(len(solution[0]))]
     for i in xrange(len(paths) - 1):
         for j in xrange(i + 1, len(paths)):
-            if validate_path_pair(paths[i], (i, ), paths[j], (j, )) != None:
+            if validate_path_pair(paths[i], (i, ), paths[j], (j, )) is not None:
                 cons = validate_path_pair(paths[i], (i, ), paths[j], (j, ))
                 for con in cons:
                     if len(con[1][0][1]) == 1:
