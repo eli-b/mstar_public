@@ -107,6 +107,7 @@ class Od_Mstar(object):
     basic M* as the base computation.
 
     """
+
     def __init__(self, obs_map, goals, recursive, sub_search=None,
                  col_checker=None, rob_id=None, inflation=1.0,
                  end_time=10 ** 15, connect_8=False, astar=False,
@@ -446,9 +447,9 @@ class Od_Mstar(object):
         # AND DOES NOT RETURN NEIGHBORS FOR WHICH THERE IS ALREADY A
         # PATH AT LEAST AS GOOD
         if self.recursive:
-            neighbors,  col_set = self.get_neighbors_recursive(node)
+            neighbors, col_set = self.get_neighbors_recursive(node)
         else:
-            neighbors,  col_set = self.get_neighbors_nonrecursive(node)
+            neighbors, col_set = self.get_neighbors_nonrecursive(node)
 
         # node is the only element in the backpropagation sets of
         # neighbors that has changed,  so we can backpropagate from here
@@ -838,10 +839,10 @@ class Od_Mstar(object):
         if node not in new_node.back_prop_set:
             new_node.back_prop_set.append(node)
         if not new_node.free:
-            return [],  new_node.col_set
+            return [], new_node.col_set
         # Skip if closed
         if new_node.closed:
-            return [],  new_node.col_set
+            return [], new_node.col_set
         # Compute the costs. THIS MAY NOT WORK IF node IS AN INTERMEDIATE
         # NODE
         t_cost = self.get_node(start_coord, True).cost

@@ -531,6 +531,7 @@ class Astar_Policy(interface.Policy_Interface):
     all functions interacting with the workspace are passed into this
     class as arguments.
     """
+
     def __init__(self, world_descriptor, config_graph, goal=None,
                  compute_heuristic=compute_heuristic_conn_4):
         """Initialization function for Astar_Policy
@@ -823,6 +824,7 @@ class Astar_DiGraph_Policy(Astar_Policy):
     all functions interacting with the workspace are passed into this
     class as arguments.
     """
+
     def __init__(self, world_descriptor, config_graph, goal=None,
                  compute_heuristic=compute_heuristic_conn_4):
         """Initialization function for Astar_Policy
@@ -918,6 +920,7 @@ class Priority_Graph(interface.Policy_Interface):
     various forms. This way, any work done by the Astar_Policy can be
     leveraged for the priority planner, and vice versa
     """
+
     def __init__(self, astar_policy, max_t=None):
         """initialization for Priority_Graph
 
@@ -1067,6 +1070,7 @@ class Limited_Astar_Policy(Astar_Policy):
     legal edges
 
     """
+
     def __init__(self, world_descriptor, goal, limit_graph, connect_8=False):
         Astar_Policy.__init__(self, world_descriptor, goal, connect_8)
         self.limit_graph = limit_graph
@@ -1084,6 +1088,7 @@ class Edge_Checker(interface.Planner_Edge_Checker):
     handled (may require keeping track of state for non-trivial graphs
 
     """
+
     def __init__(self):
         """Takes no arguments, because on grid graph, only the
         coordinates matter
@@ -1241,7 +1246,7 @@ class Edge_Checker(interface.Planner_Edge_Checker):
                     paths[t][bot] = tuple(paths[t][bot])
                 # (a) simultaneous occupation of one node
                 if coord == paths[t][bot]:
-                        return True
+                    return True
                 # (b) pass through and cross over collision
                 if pcoord is not None:
                     if not isinstance(pcoord, tuple):
@@ -1429,6 +1434,7 @@ class NoRotationChecker(interface.Planner_Edge_Checker):
     into the place that was just vacated
 
     """
+
     def __init__(self):
         """Takes no arguments, because on grid graph, only the
         coordinates matter
@@ -1490,6 +1496,7 @@ class Lazy_Edge_Checker(interface.Planner_Edge_Checker):
     handled (may require keeping track of state for non-trivial graphs
 
     """
+
     def __init__(self):
         """Takes no arguments, because on grid graph, only the
         coordinates matter

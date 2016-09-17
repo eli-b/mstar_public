@@ -41,7 +41,7 @@ CON_STATES = 1
 VALID_META_PLANNERS = ['od_rmstar', 'op_decomp', 'epea', 'epermstar']
 
 
-#Defining some helper functions for manipulating constraints
+# Defining some helper functions for manipulating constraints
 def con_empty_constraint(robots):
     """creates a new constraint for robots, containing no actual
     prohibited states, to be populated later
@@ -166,7 +166,7 @@ def con_is_constrained(constraint, time, coord1, coord2):
             if len(sub[CON_STATES]) == 2:
                 # Edge constraint
                 if (sub[CON_STATES][0] == coord1 and
-                    sub[CON_STATES][1] == coord2):
+                        sub[CON_STATES][1] == coord2):
                     return True
             else:
                 # Node constraint
@@ -252,7 +252,7 @@ def con_merge_agents(constraints, robs1, robs2):
     dex = 0
     while dex < len(constraints):
         if (robs1 == con_get_robots(constraints[dex]) or
-            robs2 == con_get_robots(constraints[dex])):
+                robs2 == con_get_robots(constraints[dex])):
             constraints.pop(dex)
         else:
             dex += 1
@@ -403,6 +403,7 @@ class CBS_Planner(object):
     time until it reaches its goal for the last time and stays there
     from then on out
     """
+
     def __init__(self, obs_map, goals, sub_search=None, conn_8=False,
                  meta_agents=False, merge_thresh=1, meta_planner='op_decomp',
                  sum_of_costs=False, return_cost=False):
@@ -439,7 +440,7 @@ class CBS_Planner(object):
                                      'epermstar']
         # Counts the number of collisions for determining when to merge
         self.col_count = [[0 for i in xrange(len(goals))]
-                                   for j in xrange(len(goals))]
+                          for j in xrange(len(goals))]
         if sub_search == None:
             self.sub_search = {}
             for i in xrange(len(self.goals)):
@@ -623,12 +624,12 @@ class CBS_Planner(object):
             if len(bots) == 1:
                 bots = con_get_robots(con)[0]
                 path, tcost =\
-                        constrained_planner.find_forwards_constrained_path(
-                            self.obs_map, init_pos[bots], self.goals[bots],
-                            con, sub_search=self.sub_search,
-                            conn_8=self.conn_8, out_paths=out_paths,
-                            time_limit=time_limit - timer.time() + temp_time,
-                            sum_of_costs=self.sum_of_costs)
+                    constrained_planner.find_forwards_constrained_path(
+                        self.obs_map, init_pos[bots], self.goals[bots],
+                        con, sub_search=self.sub_search,
+                        conn_8=self.conn_8, out_paths=out_paths,
+                        time_limit=time_limit - timer.time() + temp_time,
+                        sum_of_costs=self.sum_of_costs)
                 if first_pass:
                     if out_paths == None:
                         # out_paths = path
@@ -826,7 +827,7 @@ def validate_solution(solution):
     """
     # Decompose joint path so it can be passed to validate path pair
     paths = [[(tuple(solution[dex][rob]), ) for dex in xrange(len(solution))]
-               for rob in xrange(len(solution[0]))]
+             for rob in xrange(len(solution[0]))]
     for i in xrange(len(paths) - 1):
         for j in xrange(i + 1, len(paths)):
             if validate_path_pair(paths[i], (i, ), paths[j], (j, )) != None:
@@ -850,7 +851,7 @@ def interactive_validate_solution(solution):
     """
     # Decompose joint path so it can be passed to validate path pair
     paths = [[(tuple(solution[dex][rob]), ) for dex in xrange(len(solution))]
-               for rob in xrange(len(solution[0]))]
+             for rob in xrange(len(solution[0]))]
     for i in xrange(len(paths) - 1):
         for j in xrange(i + 1, len(paths)):
             if validate_path_pair(paths[i], (i, ), paths[j], (j, )) != None:

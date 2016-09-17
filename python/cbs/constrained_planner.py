@@ -24,7 +24,7 @@ def find_constrained_path(obs_map, init_pos, goal, constraints,
     p = Constrained_Planner(obs_map, init_pos, goal, constraints,
                             sub_search=sub_search, conn_8=conn_8,
                             inflation=inflation, out_paths=out_paths)
-    #Need to specify when you are starting your path from
+    # Need to specify when you are starting your path from
     init_pos = (init_pos[0], init_pos[1], 0)
     return p.find_path(init_pos, time_limit=time_limit)
 
@@ -39,6 +39,7 @@ class Constrained_Planner(object):
     set to provide resumable planning to different positions and times
     to provide policy style planning
     '''
+
     def __init__(self, obs_map, init_pos, goal, constraints, out_paths=None,
                  sub_search=None, conn_8=False, inflation=1, prune_paths=True):
         '''initialize variables (obstacle map, positions, ...)
@@ -430,6 +431,7 @@ class Constraint_Node:
     '''All data needed concerning one single node, coord is to hold both
     position and time information
     '''
+
     def __init__(self, coord, back_ptr=None):
         '''
         coord    - coordinates of the node
@@ -439,8 +441,8 @@ class Constraint_Node:
         '''
         self.coord = coord
         self.back_ptr = back_ptr
-                # only tmp_cost is updated within find_single_path
-                # cost is updated within expand (--> Sorted Collection)
+        # only tmp_cost is updated within find_single_path
+        # cost is updated within expand (--> Sorted Collection)
         self.cost = (MAX_COST, MAX_COST)
         self.closed = False
         self.open = False
@@ -462,6 +464,7 @@ class Forward_Constraint_Node(object):
     '''All data needed concerning one single node, coord is to hold both
     position and time information
     '''
+
     def __init__(self, coord, t, back_ptr=None):
         '''
         coord    - coordinates of the node
@@ -470,8 +473,8 @@ class Forward_Constraint_Node(object):
         back_ptr - pointer to previous node in a path found for a robot'''
         self.coord = coord
         self.back_ptr = back_ptr
-                # only tmp_cost is updated within find_single_path
-                # cost is updated within expand (--> Sorted Collection)
+        # only tmp_cost is updated within find_single_path
+        # cost is updated within expand (--> Sorted Collection)
         self.cost = [MAX_COST, MAX_COST]
         self.closed = False
         self.open = False
@@ -481,7 +484,7 @@ class Forward_Constraint_Node(object):
         # paths or the time of the last constraint.  This is because
         # once the rest of the environment is static, time doesn't
         # matter for the trajectory
-        self.t = t 
+        self.t = t
         # holds the current time without max operations.  Only used to
         # compute the sum_of_costs metric
         self.time_for_cost = 0
@@ -500,11 +503,12 @@ class Forward_Constraint_Node(object):
 
 class Constrained_Forwards_Planner(object):
     '''Performs constrained planning for a single robot'''
+
     def __init__(self, obs_map, init_pos, goal, constraints, sub_search=None,
                  conn_8=False, inflation=1.0, out_paths=None,
                  sum_of_costs=False):
         '''initialize variables (obstacle map, positions, ...)
-        
+
         Every action except waiting at the goal configuration incurs
         cost 1. Waiting at the goal configuration incurs zero cost
 
@@ -537,7 +541,7 @@ class Constrained_Forwards_Planner(object):
         self.goal_t = cbs.con_get_max_time(self.constraints) + 1
         self.max_t = self.goal_t
         if out_paths is not None:
-                self.max_t = max(self.goal_t, len(out_paths))
+            self.max_t = max(self.goal_t, len(out_paths))
         self.inflation = inflation
         self.out_paths = out_paths
         self.col_check = workspace_graph.Edge_Checker()
@@ -625,7 +629,7 @@ class Constrained_Forwards_Planner(object):
         first.cost = [0, 0]
         first.back_ptr = first
         open_list = SortedCollection.SortedCollection(
-            [first], key=lambda x: [-x.cost[0]-x.h * self.inflation,
+            [first], key=lambda x: [-x.cost[0] - x.h * self.inflation,
                                     -x.cost[1]])
         while len(open_list) != 0:
             if timer.time() > end_time:
@@ -647,27 +651,28 @@ class Constrained_Forwards_Planner(object):
 def find_forwards_constrained_path(
         obs_map, init_pos, goal, constraints, sub_search=None, conn_8=False,
         inflation=1.0, time_limit=5 * 60, out_paths=None, sum_of_costs=False):
-        '''initialize variables (obstacle map, positions, ...).
-        obs_map      - binary obstacle map
-        init_pos     - start positions
-        goal         - goal position
-        constraints  - constraints defining where robot cannot go,
-                       should consist of a single tuple, with only the
-                       appropriate robots
-        conn_8       - 8-connected grid if True; otherwise 4-connected
-        sum_of_costs - use sum of costs, i.e. cost = time until agent
-                       reaches the goal and does not depart
-        '''
-        if sum_of_costs:
-            p = Sum_Of_Cost_Constrained_Forwards_Planner(
-                obs_map, init_pos, goal, constraints, sub_search=sub_search,
-                conn_8=conn_8, inflation=inflation, out_paths=out_paths)
-        else:
-            p = Constrained_Forwards_Planner(
-                obs_map, init_pos, goal, constraints, sub_search=sub_search,
-                conn_8=conn_8, inflation=inflation, out_paths=out_paths)
-        # Need to specify when you are starting your path from
-        return p.find_path(time_limit=time_limit)
+    '''initialize variables (obstacle map, positions, ...).
+    obs_map      - binary obstacle map
+    init_pos     - start positions
+    goal         - goal position
+    constraints  - constraints defining where robot cannot go,
+                   should consist of a single tuple, with only the
+                   appropriate robots
+    conn_8       - 8-connected grid if True; otherwise 4-connected
+    sum_of_costs - use sum of costs, i.e. cost = time until agent
+                   reaches the goal and does not depart
+    '''
+    if sum_of_costs:
+        p = Sum_Of_Cost_Constrained_Forwards_Planner(
+            obs_map, init_pos, goal, constraints, sub_search=sub_search,
+            conn_8=conn_8, inflation=inflation, out_paths=out_paths)
+    else:
+        p = Constrained_Forwards_Planner(
+            obs_map, init_pos, goal, constraints, sub_search=sub_search,
+            conn_8=conn_8, inflation=inflation, out_paths=out_paths)
+    # Need to specify when you are starting your path from
+    return p.find_path(time_limit=time_limit)
+
 
 class Sum_Of_Cost_Constrained_Forwards_Planner(Constrained_Forwards_Planner):
     '''Variant of Constrained_Forwards_Planner that uses a sum-of-costs

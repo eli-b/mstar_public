@@ -1,10 +1,10 @@
 #!/usr/bin/python
-#This file is purely intended to generate the world arguments, al la
-#plan_tester.py and store them in a pickled folder, so you can run multiple
-#trials on the same data set.  This now more important, because I am starting
-#to compare slightly different versions of mStar, where natural variations in
-#the number of failures look to be swamping the actual signal, at least without
-#further increasing the number of robots
+# This file is purely intended to generate the world arguments, al la
+# plan_tester.py and store them in a pickled folder, so you can run multiple
+# trials on the same data set.  This now more important, because I am starting
+# to compare slightly different versions of mStar, where natural variations in
+# the number of failures look to be swamping the actual signal, at least without
+# further increasing the number of robots
 import multiprocessing
 import pickle
 import random
@@ -38,23 +38,23 @@ def gen_coverage_world(size, num_bots, obs_density, connect_8=False):
         return 0
 
     obs_map = [[foo() for i in xrange(size)] for j in xrange(size)]
-    #Generate the initial positions of the robots
+    # Generate the initial positions of the robots
     init_pos = []
     goals = []
     # Keeps track of how many times tried to generate valid initial,
     # goal positions
     counter = 0
-    #Number of times to try for a given obstacle arrangement
+    # Number of times to try for a given obstacle arrangement
     max_tries = 100 * num_bots
     while len(init_pos) < num_bots:
-        #Generate possible initial and goal positions
+        # Generate possible initial and goal positions
         ip = (random.randint(0, size - 1), random.randint(0, size - 1))
         g = (random.randint(0, size - 1), random.randint(0, size - 1))
         if g == ip or obs_map[g[0]][g[1]] == 1 or obs_map[ip[0]][ip[1]] == 1:
             # Don't allow the goal and initial positions to be in the
             # same spot or in an obstacle
             if counter > max_tries:
-                #obs_map is too hard, try a new one
+                # obs_map is too hard, try a new one
                 init_pos = []
                 goals = []
                 obs_map = [[foo() for i in range(size)] for j in range(size)]
@@ -63,9 +63,9 @@ def gen_coverage_world(size, num_bots, obs_density, connect_8=False):
             counter += 1
             continue
         if g in goals or ip in init_pos:
-            #Don't allow duplicate elements
+            # Don't allow duplicate elements
             if counter > max_tries:
-                #obs_map is too hard, try a new one
+                # obs_map is too hard, try a new one
                 init_pos = []
                 goals = []
                 obs_map = [[foo() for i in range(size)] for j in range(size)]
@@ -73,13 +73,13 @@ def gen_coverage_world(size, num_bots, obs_density, connect_8=False):
                 continue
             counter += 1
             continue
-        #Check if we can generate a valid path
+        # Check if we can generate a valid path
         graph = workspace_graph.Astar_Graph(obs_map, g, connect_8=connect_8)
         tpath = graph.get_step(ip)
         if tpath == None or tpath == []:
-            #No individual path, so skip
+            # No individual path, so skip
             if counter > max_tries:
-                #obs_map is too hard, try a new one
+                # obs_map is too hard, try a new one
                 init_pos = []
                 goals = []
                 obs_map = [[foo() for i in range(size)] for j in range(size)]
@@ -87,7 +87,7 @@ def gen_coverage_world(size, num_bots, obs_density, connect_8=False):
                 continue
             counter += 1
             continue
-        #initial position, goal pair is valid
+        # initial position, goal pair is valid
         init_pos.append(ip)
         goals.append(g)
     return obs_map, tuple(init_pos), tuple(goals)

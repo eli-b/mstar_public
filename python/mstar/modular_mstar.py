@@ -957,6 +957,7 @@ def gen_policy_planner_factory(policy_class):
     returns:
     method that populates the sub_search field of the calling class
     """
+
     def gen_policy_planners(self, sub_search, world, goals):
         """Creates the sub-planners and necessary policy keys.  This is
         because pretty much every sub-planner I've made requires
@@ -1029,8 +1030,7 @@ def GridMstar(world, goals, recursive, inflation=1.0, mode='OD',
                 world, lambda x: workspace_graph.GridGraphConn8WaitAtGoal(
                     x, goal, diagonal_cost=True, wait_cost=0.0),
                 goal=goal,
-                compute_heuristic=
-                workspace_graph.compute_heuristic_conn_8_diagonal)
+                compute_heuristic=workspace_graph.compute_heuristic_conn_8_diagonal)
     else:
         def policy_func(world, goal):
             return policy_cls(

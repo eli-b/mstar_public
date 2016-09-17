@@ -59,7 +59,7 @@ def main():
     print res[1]
     print res[0]
 
-    
+
 def test_func(obs_map, init_pos, goals, merge_thresh, time_limit, restarts):
     start_time = time.clock()
     if restarts > 1:

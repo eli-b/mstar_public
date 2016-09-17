@@ -160,6 +160,7 @@ def effective_col_set(col_set, prev_col_set):
 
 
 class OutOfTimeError(Exception):
+
     def __init__(self, value=None):
         self.value = value
 
@@ -168,6 +169,7 @@ class OutOfTimeError(Exception):
 
 
 class NoSolutionError(Exception):
+
     def __init__(self, value=None):
         self.value = value
 
@@ -176,6 +178,7 @@ class NoSolutionError(Exception):
 
 
 class OutOfScopeError(NoSolutionError):
+
     def __init__(self, value=None, col_set=()):
         self.value = value
         self.col_set = col_set

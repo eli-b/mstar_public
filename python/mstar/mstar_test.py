@@ -91,6 +91,7 @@ class TestGridGraphConn4WaitAtGoal(unittest.TestCase):
     """Tests a grid graph variant which does not penalyze waiting at the
     goal
     """
+
     def setUp(self):
         """Called before every test function is run"""
         self.obs_map = [[0 for i in xrange(10)] for j in xrange(10)]
@@ -421,6 +422,7 @@ class TestPriorityGraph(unittest.TestCase):
 
 class TestrMstar(unittest.TestCase):
     """Testing that ODrM* is  working"""
+
     def setUp(self):
         self.world_descriptor = [[0 for i in xrange(10)] for j in xrange(10)]
 
@@ -492,7 +494,7 @@ class TestrMstar(unittest.TestCase):
         print '\nr_mstar long tests'
         dat = pickle.load(open('../maps/5_40_bots_step_5.map'))
         start_time = time.time()
-        # Test inlfated
+        # Test inflated
         for i in [0, 30, 60, 101, 131, 141, 151, 161, 200, 250, 300, 350, 400]:
             print i
             d = dat[i]
@@ -517,6 +519,7 @@ class TestrMstar(unittest.TestCase):
 
 class TestODrMstar(unittest.TestCase):
     """Testing that ODrM* is  working"""
+
     def setUp(self):
         self.world_descriptor = [[0 for i in xrange(10)] for j in xrange(10)]
 
@@ -606,6 +609,7 @@ class TestODrMstar(unittest.TestCase):
 
 class TestEPEMstar(unittest.TestCase):
     """Testing that EPEM* is  working"""
+
     def setUp(self):
         self.world_descriptor = [[0 for i in xrange(10)] for j in xrange(10)]
 
@@ -798,22 +802,21 @@ class TestColSetMemory(unittest.TestCase):
                      (fset([1, 2, 3]), ))
         # test overlap
         _assertEqual(ef_col_set((fset([1, 2]), fset([3, 4])),
-                                   (fset([1, 2, 3]), )),
+                                (fset([1, 2, 3]), )),
                      (fset([1, 2]), fset([3, 4])))
         # test multiple containment
         _assertEqual(ef_col_set((fset([1, 2]), fset([3, 4])),
-                                   (fset([1, 2, 3, 4]), )),
+                                (fset([1, 2, 3, 4]), )),
                      (fset([1, 2, 3, 4]), ))
         _assertEqual(ef_col_set((fset([1, 2]), fset([3, 4]), fset([5, 6])),
-                                   (fset([1, 2, 3, 4]), )),
+                                (fset([1, 2, 3, 4]), )),
                      (fset([1, 2, 3, 4]), fset([5, 6])))
         _assertEqual(ef_col_set((fset([1, 2]), fset([3, 4]), fset([5, 6])),
-                                   (fset([1, 2, 3, 4]), fset([5, 6, 7]))),
+                                (fset([1, 2, 3, 4]), fset([5, 6, 7]))),
                      (fset([1, 2, 3, 4]), fset([5, 6, 7])))
         _assertEqual(ef_col_set((fset([1, 2]), fset([3, 4]), fset([5, 6])),
-                                   (fset([1, 2, 3, 4]), fset([6, 7]))),
+                                (fset([1, 2, 3, 4]), fset([6, 7]))),
                      (fset([1, 2, 3, 4]), fset([5, 6])))
-
 
 
 #########################################################################

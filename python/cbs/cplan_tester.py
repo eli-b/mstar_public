@@ -7,11 +7,12 @@ import independence_detection
 import os
 import time
 import gc
-import  subprocess
-import  argparse
+import subprocess
+import argparse
 from Queue import Empty
 from col_set_addition import OutOfTimeError
-import  NoSolutionError
+import NoSolutionError
+
 
 def path_cost(path, goals):
     cost = 0
@@ -21,30 +22,32 @@ def path_cost(path, goals):
                 cost += 1
     return cost
 
+
 def inner_worker(args, output):
     try:
         out = test_func(args)
         output.put(out)
     except RuntimeError as e:
-        print "Error %s" %(repr(e))
-        print "World %d" %(args['test_num'])
+        print "Error %s" % (repr(e))
+        print "World %d" % (args['test_num'])
         output.put(repr(e))
     except AttributeError as e:
-        print "Attribute Error %s" %(repr(e))
-        print "World %d" %(args['test_num'])
+        print "Attribute Error %s" % (repr(e))
+        print "World %d" % (args['test_num'])
         output.put(repr(e))
     # except AssertionError as e:
     #     print "Assertion Error %s" %(repr(e))
     #     print "World %d" %(args['test_num'])
     #     output.put(repr(e))
     except ValueError as e:
-        print "Value Error: %s" %(repr(e))
-        print "World %d" %(args['test_num'])
+        print "Value Error: %s" % (repr(e))
+        print "World %d" % (args['test_num'])
         output.put(repr(e))
     # except Exception as e:
     #     print 'Unexpected Error %s' %(repr(e))
     #     print "World %d" %(args['test_num'])
     #     output.put(repr(e))
+
 
 def worker(input, output, file_name):
     for args in iter(input.get, 'STOP'):
@@ -57,17 +60,17 @@ def worker(input, output, file_name):
                                              args=(args, inner_queue))
         inner_proc.start()
         try:
-            results = inner_queue.get(timeout = args['time_limit'] + 5)
+            results = inner_queue.get(timeout=args['time_limit'] + 5)
         except Empty:
             print 'Runaway Timeout'
             inner_proc.terminate()
             res = args_to_dict(args)
-            res.update({'time':time.time() - start_time, 
-                        'fail_flag':'Out Of Time', 'num_nodes':-1,
-                        'corrected_mem_usage':-1, 'final_init_pos':None,
-                        'path_cost':-1})
+            res.update({'time': time.time() - start_time,
+                        'fail_flag': 'Out Of Time', 'num_nodes': -1,
+                        'corrected_mem_usage': -1, 'final_init_pos': None,
+                        'path_cost': -1})
             if args['return_path']:
-                res.update({'paths':None, 'obs_map':args['obs_map']})
+                res.update({'paths': None, 'obs_map': args['obs_map']})
             p.dump(res)
             out_file.flush()
             os.fsync(out_file.fileno())
@@ -76,13 +79,13 @@ def worker(input, output, file_name):
             gc.collect(2)
             continue
         if isinstance(results, str):
-            #Got some arbitrary error to sort out
+            # Got some arbitrary error to sort out
             res = args_to_dict(args)
-            res.update({'time':time.time() - start_time, 'fail_flag':results,
-                        'num_nodes':-1, 'corrected_mem_usage':-1,
-                        'final_init_pos':None, 'path_cost':-1})
+            res.update({'time': time.time() - start_time, 'fail_flag': results,
+                        'num_nodes': -1, 'corrected_mem_usage': -1,
+                        'final_init_pos': None, 'path_cost': -1})
             if args['return_path']:
-                res.update({'paths':None, 'obs_map':args['obs_map']})
+                res.update({'paths': None, 'obs_map': args['obs_map']})
             p.dump(res)
         else:
             p.dump(results)
@@ -93,14 +96,15 @@ def worker(input, output, file_name):
         gc.collect(2)
     output.put('Process Finished')
 
+
 def args_to_dict(args):
-    '''Reads in the arguments, and returns the dictionary containing the 
+    '''Reads in the arguments, and returns the dictionary containing the
     appropriate  portions, to which planning results can be added later'''
     to_skip = ['return_path', 'obs_map']
-    output = {k:v for k, v in args.iteritems() if k not in to_skip}
+    output = {k: v for k, v in args.iteritems() if k not in to_skip}
     # output = {'init_pos':args['init_pos'],'goals':args['goals'],
     #           'inflation':args['inflation'],'time_limit':args['time_limit'],
-    #           'test_num':args['test_num'],'recursive':args['recursive'], 
+    #           'test_num':args['test_num'],'recursive':args['recursive'],
     #           'prio':args['prio'], 'policy_opt':args['opt'],'cbs':args['cbs'],
     #           'merge_thresh':args['merge_thresh'],
     #           'op_decomp':args['op_decomp'],'murty':args['murty'],
@@ -111,6 +115,7 @@ def args_to_dict(args):
     if args['return_path']:
         output['obs_map'] = args['obs_map']
     return output
+
 
 def test_func(args):
     paths = None
@@ -154,8 +159,8 @@ def test_func(args):
                                              merge_thresh=args['merge_thresh'],
                                               meta_planner=planner)
                 paths = cbs_planner.find_solution(
-                    args['init_pos'], 
-                    time_limit = time.clock() - start_time + args['time_limit'])
+                    args['init_pos'],
+                    time_limit=time.clock() - start_time + args['time_limit'])
         sol_time = time.clock() - start_time
     except NoSolutionError:
         print 'No solution'
@@ -171,31 +176,31 @@ def test_func(args):
     if paths != None:
         cost = path_cost(paths, args['goals'])
     res = args_to_dict(args)
-    res.update({'time':sol_time, 'fail_flag':fail_flag, 'num_nodes':num_nodes,
-                'corrected_mem_usage':corrected_mem,
-                'final_init_pos':final_init_pos, 'path_cost':cost})
+    res.update({'time': sol_time, 'fail_flag': fail_flag, 'num_nodes': num_nodes,
+                'corrected_mem_usage': corrected_mem,
+                'final_init_pos': final_init_pos, 'path_cost': cost})
     if args['return_path']:
-        res.update({'paths':paths, 'obs_map':args['obs_map']})
+        res.update({'paths': paths, 'obs_map': args['obs_map']})
     return res
-               
-              
+
+
 def main(argv=sys.argv):
-    '''Performs the system test, intended to use world_gen as the primary 
+    '''Performs the system test, intended to use world_gen as the primary
     source'''
     reuse_partial_results = True
-    #Create use argparser to process arguments
-    parser = argparse.ArgumentParser(description='Runs trials for M* ' + 
+    # Create use argparser to process arguments
+    parser = argparse.ArgumentParser(description='Runs trials for M* ' +
                                      'and associated algorithms.  Using' +
                                      'independence detection by default, or' +
                                      'optionally using cbs/ma-cbs')
-    parser.add_argument('map_file', 
-                        help='Specifies the file from which to draw' +  
+    parser.add_argument('map_file',
+                        help='Specifies the file from which to draw' +
                         'the world specifications')
     parser.add_argument('output_file', help='File where output will be saved')
     parser.add_argument('num_processors', type=int, action='store',
                           help='Number of processes to run')
     parser.add_argument('-8', dest='connect_8', action='store_true',
-                        help='Build an 8-connected graph' + 
+                        help='Build an 8-connected graph' +
                         'rather than a 4 connected graph')
     parser.add_argument('-r', dest='recursive', action='store_true',
                           help='Uses rM*')
@@ -203,16 +208,15 @@ def main(argv=sys.argv):
                         help='Use EPErM* as the coupled planner for MA-CBS')
     parser.add_argument('-c', dest='cbs', action='store_true', help='Use cbs')
     parser.add_argument('-m', dest='merge_thresh', action='store', type=int,
-                        default = -1, metavar="MERGE_THRESH", help=
-                        'Sets the threshold for merging agents in meta-CBS.  '+
+                        default=-1, metavar="MERGE_THRESH", help='Sets the threshold for merging agents in meta-CBS.  ' +
                         'Defaults to -1, for basic CBS.  Higher values for ' +
                         'meta cbs.  The default coupled planner is od_rmstar' +
                         '. Passing the -o option results in using op_decomp')
     parser.add_argument('-i', action='store', default=1, type=float,
-                        help='Set the inflation factor for the heuristic, '+
+                        help='Set the inflation factor for the heuristic, ' +
                         'defaults to 1',
                         metavar='INF', dest='inflation')
-    parser.add_argument('-t', action='store', type=float, default=5*60,
+    parser.add_argument('-t', action='store', type=float, default=5 * 60,
                         help='Set time limit for finding paths',
                         metavar='TIME_LIMIT', dest='time_limit')
     parser.add_argument('-s', action='store_true',
@@ -223,7 +227,7 @@ def main(argv=sys.argv):
                         help='Also make use of the coupled priority planner',
                         dest='prio')
     parser.add_argument('-po', action='store_true',
-                        help='Use policy optimization for the M* variants', 
+                        help='Use policy optimization for the M* variants',
                         dest='opt')
     parser.add_argument('--path', action='store_true',
             help='Stores the paths in the output file, results in large files',
@@ -238,36 +242,36 @@ def main(argv=sys.argv):
     revision = subprocess.check_output(
         'git log | head -n 1 | sed s/commit\s*//', shell=True).strip)
     for i in xrange(len(worlds)):
-        worlds[i]['test_num'] = i
-        worlds[i]['recursive'] = arguments.recursive
-        worlds[i]['connect_8'] = arguments.connect_8
-        worlds[i]['epermstar'] = arguments.epermstar
-        worlds[i]['time_limit'] = arguments.time_limit
-        worlds[i]['return_path'] = arguments.return_path
-        worlds[i]['astar'] = arguments.astar
-        worlds[i]['use_source_memory'] = arguments.use_source_memory
-        worlds[i]['opt'] = arguments.opt
-        worlds[i]['merge_thresh'] = arguments.merge_thresh
-        worlds[i]['revision'] = revision
+        worlds[i]['test_num']=i
+        worlds[i]['recursive']=arguments.recursive
+        worlds[i]['connect_8']=arguments.connect_8
+        worlds[i]['epermstar']=arguments.epermstar
+        worlds[i]['time_limit']=arguments.time_limit
+        worlds[i]['return_path']=arguments.return_path
+        worlds[i]['astar']=arguments.astar
+        worlds[i]['use_source_memory']=arguments.use_source_memory
+        worlds[i]['opt']=arguments.opt
+        worlds[i]['merge_thresh']=arguments.merge_thresh
+        worlds[i]['revision']=revision
         assert arguments.inflation >= 1.0
-        worlds[i]['inflation'] = arguments.inflation
-            
-    task_queue = multiprocessing.Queue()
-    done_queue = multiprocessing.Queue()
-    precomputed_trials = []
+        worlds[i]['inflation']=arguments.inflation
+
+    task_queue=multiprocessing.Queue()
+    done_queue=multiprocessing.Queue()
+    precomputed_trials=[]
     if reuse_partial_results:
-        dat = []
+        dat=[]
         try:
-            #Check if we've already established a partial results cache
-            dat = pickle.load(open(arguments.output_file + 
+            # Check if we've already established a partial results cache
+            dat=pickle.load(open(arguments.output_file +
                                    '.old_results_cache'))
-            print 'Loaded old cache: %d trials'  %(len(dat))
-            precomputed_trials = map(lambda x:x['test_num'], dat)
+            print 'Loaded old cache: %d trials' % (len(dat))
+            precomputed_trials=map(lambda x: x['test_num'], dat)
         except IOError:
-            #Haven't cached previous results, so don't need to do anything
+            # Haven't cached previous results, so don't need to do anything
             pass
         for i in xrange(arguments.num_processors):
-            print 'Loading old data from process %d' %(i)
+            print 'Loading old data from process %d' % (i)
             try:
                 p = pickle.Unpickler(open(arguments.output_file + '.' + str(i)))
                 try:
@@ -276,12 +280,12 @@ def main(argv=sys.argv):
                         precomputed_trials.append(temp['test_num'])
                         dat.append(temp)
                 except EOFError:
-                    print 'Found end of file: %d trials found' %(len(dat))
+                    print 'Found end of file: %d trials found' % (len(dat))
             except IOError:
                 print 'No cached results'
                 break
         if len(dat) > 0:
-            # Results files can get rather big, especially if you return 
+            # Results files can get rather big, especially if you return
             # the paths, so cache the results in a temp file
             tempfile = open(arguments.output_file + '.old_results_cache', 'w')
             pickle.dump(dat, tempfile, protocol = -1)
@@ -290,57 +294,57 @@ def main(argv=sys.argv):
             gc.collect()
         else:
             reuse_partial_results = False
-        #Ignore worlds we've already done
-        worlds = filter(lambda x:x['test_num'] not in precomputed_trials, 
+        # Ignore worlds we've already done
+        worlds = filter(lambda x: x['test_num'] not in precomputed_trials,
                         worlds)
-    #Clear out the files that will hold the results
+    # Clear out the files that will hold the results
     for i in xrange(arguments.num_processors):
-        f = open(arguments.output_file + '.' + str(i), 'w')
+        f=open(arguments.output_file + '.' + str(i), 'w')
         f.close()
-    #Start the worker process
+    # Start the worker process
     for i in xrange(arguments.num_processors):
-        multiprocessing.Process(target=worker, 
-                                args=(task_queue, done_queue, 
-                                      arguments.output_file + '.' + 
+        multiprocessing.Process(target = worker,
+                                args = (task_queue, done_queue,
+                                      arguments.output_file + '.' +
                                       str(i))).start()
     for i in worlds:
         task_queue.put(i)
     for i in xrange(arguments.num_processors):
         task_queue.put('STOP')
-    #Save the results
-    jobs = 0
-    processes_finished = 0
-    print "waiting for job 1 %d" %(len(worlds))
+    # Save the results
+    jobs=0
+    processes_finished=0
+    print "waiting for job 1 %d" % (len(worlds))
     for i in xrange(len(worlds) + (arguments.num_processors)):
-        temp = done_queue.get()
+        temp=done_queue.get()
         if temp == 'Finished':
             print 'got_job'
             jobs += 1
             if jobs < len(worlds):
-                print 'waiting for job %d %d' %(jobs + 1, len(worlds))
+                print 'waiting for job %d %d' % (jobs + 1, len(worlds))
         elif temp == 'Process Finished':
             processes_finished += 1
-            print 'Process terminated: %d %d' %(processes_finished, 
+            print 'Process terminated: %d %d' % (processes_finished,
                                                 arguments.num_processors)
     print 'Gathering Data'
-    dat = []
+    dat=[]
     if reuse_partial_results:
         print 'old_cache'
-        dat = pickle.load(open(arguments.output_file + '.old_results_cache'))
-        print 'trials found: %d' %(len(dat))
+        dat=pickle.load(open(arguments.output_file + '.old_results_cache'))
+        print 'trials found: %d' % (len(dat))
     for i in xrange(arguments.num_processors):
-        print 'Merging data from process %d' %(i)
-        p = pickle.Unpickler(open(arguments.output_file + '.' + str(i)))
+        print 'Merging data from process %d' % (i)
+        p=pickle.Unpickler(open(arguments.output_file + '.' + str(i)))
         try:
             while True:
                 dat.append(p.load())
         except EOFError:
-            print 'Found end of file: %d trials found' %(len(dat))
+            print 'Found end of file: %d trials found' % (len(dat))
         try:
-            #Pull out the name of the file itself, so we can move the partial
-            #results to old_partials
-            tempname = arguments.output_file.split('/')[-1]
-            os.rename(arguments.output_file + '.' + str(i), 'old_partials/' + 
+            # Pull out the name of the file itself, so we can move the partial
+            # results to old_partials
+            tempname=arguments.output_file.split('/')[-1]
+            os.rename(arguments.output_file + '.' + str(i), 'old_partials/' +
                       tempname + '.' + str(i))
         except Exception:
             pass
