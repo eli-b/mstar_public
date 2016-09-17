@@ -9,13 +9,6 @@ Overview
   * `mstar/` basic M*
   * `utils/` utillity code, including parallel and distributed map functions
 
-Required Packages (Python)
-----
-* `python-networkx`
-* `python-matplotlib`
-* `python-ipdb`
-
-
 Required Packages (C++)
 ----
 * `g++`
