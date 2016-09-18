@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import argparse
-import cbs
+import od_mstar
 import time
 import subprocess
 import multiprocessing
@@ -16,7 +16,7 @@ from col_set_addition import OutOfTimeError
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Finds to the specified instance file using M*+MA-CBS.  ' +
+        description='Finds to the specified instance file using OD-rM*.  ' +
         'Prints run time then path cost to stdout.  If error, print the ' +
         'string form of the error instead. Will print "Out Of Time" if ' +
         'timed out.  If an unexpected error occurs, will print "ERROR" ' +
@@ -25,14 +25,6 @@ def main():
     parser.add_argument('test_file', help='Name of instance file to run')
     parser.add_argument('-t', dest='time_limit', action='store',
                         type=float, default=300, help='Time limit to run')
-    parser.add_argument(
-        '--merge_thresh', dest='merge_thresh', action='store',
-        type=int, default=100, help='Merge threshhold for MA-CBS + EPErM*')
-    parser.add_argument(
-        '--restarts', action='store', type=int, default=1,
-        help='Number of random trials to run.  If 1, use a single run.  ' +
-        'Otherwise split time into n sections, and run each with randomized ' +
-        'robot labeling')
     sys.setrecursionlimit(9999999)
     args = parser.parse_args()
 
@@ -43,8 +35,7 @@ def main():
     # cleanup after every run
     try:
         res = timeout_function(
-            test_func, (obs_map, init_pos, goals, args.merge_thresh,
-                        args.time_limit, args.restarts),
+            test_func, (obs_map, init_pos, goals, args.time_limit),
             args.time_limit + 10)
     except OutOfTimeError:
         print 'Out Of Time'
@@ -58,24 +49,22 @@ def main():
     print res[2]
     print res[1]
     if res[1] < 20000:
-        print_solution(res[0])
+        print print_solution(res[0])
 
 
-def test_func(obs_map, init_pos, goals, merge_thresh, time_limit, restarts):
+def test_func(obs_map, init_pos, goals, time_limit):
     start_time = time.clock()
-    if restarts > 1:
-        path, cost = cbs.permuted_cbs_find_path(
-            obs_map, init_pos, goals, conn_8=False, meta_agents=True,
-            merge_thresh=merge_thresh, meta_planner='epermstar',
-            time_limit=time_limit, sum_of_costs=True, return_cost=True,
-            num_restarts=restarts)
-    else:
-        path, cost = cbs.find_path(
-            obs_map, init_pos, goals, conn_8=False, meta_agents=True,
-            merge_thresh=merge_thresh, meta_planner='epermstar',
-            time_limit=time_limit, sum_of_costs=True, return_cost=True)
+    path, planner = od_mstar.find_path(
+        obs_map, init_pos, goals, connect_8=False,
+        time_limit=time_limit, get_obj=True)
+    cost = planner.get_node(planner.goals, True).cost
     end_time = time.clock() - start_time
     return path, cost, end_time
+
+
+def print_solution(solution):
+    for time_step_position in solution:
+        print '|{}|'.format('|'.join('({},{})'.format(x, y) for x,y in time_step_position))
 
 
 def read_eli_instance_file(file_name):
@@ -111,11 +100,6 @@ def read_eli_instance_file(file_name):
         goals.append((int(vals[0]), int(vals[1])))
         init_pos.append((int(vals[2]), int(vals[3])))
     return obs_map, init_pos, goals
-
-
-def print_solution(solution):
-    for time_step_position in solution:
-        print '|{}|'.format('|'.join('({},{})'.format(x, y) for x,y in time_step_position))
 
 
 def inner_func(func, args, queue):
