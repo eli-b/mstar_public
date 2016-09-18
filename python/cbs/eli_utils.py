@@ -20,7 +20,7 @@ def main():
         'Prints run time then path cost to stdout.  If error, print the ' +
         'string form of the error instead. Will print "Out Of Time" if ' +
         'timed out.  If an unexpected error occurs, will print "ERROR" ' +
-        'then the string reprsentation of the error.  Assumes 4 connected ' +
+        'then the string representation of the error.  Assumes 4 connected ' +
         'grid using sum of costs metric')
     parser.add_argument('test_file', help='Name of instance file to run')
     parser.add_argument('-t', dest='time_limit', action='store',
@@ -39,7 +39,7 @@ def main():
     obs_map, init_pos, goals = read_eli_instance_file(args.test_file)
 
     # Have found some cases where my timing code slips up, so run in a
-    # seperate process that can kill runaway processes.  Also forces a
+    # separate process that can kill runaway processes.  Also forces a
     # cleanup after every run
     test = lambda: test_func(obs_map, init_pos, goals, args.merge_thresh,
                              args.time_limit, args.restarts)
@@ -100,7 +100,7 @@ def read_eli_instance_file(file_name):
             if l[col] == '@':
                 obs_map[row][col] = 1
     l = f.readline()
-    assert(l.startswith('Agents:'))
+    assert l.startswith('Agents:')
     l = f.readline().split('#')[0]
     num_agents = int(l)
     init_pos = []

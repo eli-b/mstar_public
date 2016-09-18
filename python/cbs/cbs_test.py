@@ -1361,7 +1361,7 @@ class TestSum_Of_Costs_Constrained_Forwards_Planner(unittest.TestCase):
         p = constrained_planner.Constrained_Forwards_Planner(
             obs_map, (0, 0), (19, 0), con)
         path, cost = p.find_path(time_limit=10)
-        assert((10, 3) in path)
+        assert (10, 3) in path
 
 
 class TestSumOfCostsCBS(unittest.TestCase):

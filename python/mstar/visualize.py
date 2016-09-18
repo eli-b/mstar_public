@@ -308,7 +308,7 @@ def animate_result_step(step, paths, obs_map, init_pos, goals, file_base=None,
     if increments > 1 and conn_8:
         rob_size = 7
     increments = int(increments)
-    assert(increments >= 1)
+    assert increments >= 1
     # Decompose the path from a path in the full c space to individual
     # paths
     path_length = len(paths)

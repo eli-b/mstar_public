@@ -239,7 +239,7 @@ def main(argv=sys.argv):
                         'age map file')
     arguments = parser.parse_args()
     world_args = []
-    assert(arguments.fixed or (arguments.world_size is not None))
+    assert arguments.fixed or (arguments.world_size is not None)
     for num_robots in range(arguments.min_robots, arguments.max_robots + 1,
                             arguments.step):
         # Try a varying number of robots
@@ -249,7 +249,7 @@ def main(argv=sys.argv):
                 size = FIXED_SIZE
             elif arguments.world_size is not None:
                 size = arguments.world_size
-                assert(size > 0)
+                assert size > 0
             if arguments.dragon_age is not None:
                 world_args.append([arguments.dragon_age, num_robots])
             else:

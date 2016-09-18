@@ -62,7 +62,7 @@ class Constrained_Planner(object):
         self.init_pos = tuple(init_pos)
         self.constraints = constraints
         self.out_paths = out_paths
-        assert(len(cbs.con_get_robots(constraints)) == 1)
+        assert len(cbs.con_get_robots(constraints)) == 1
         # Store as tuple, as just need as dictionary key
         self.rob_id = cbs.con_get_robots(constraints)
         self.conn_8 = conn_8
@@ -526,7 +526,7 @@ class Constrained_Forwards_Planner(object):
         self.goal = tuple(goal)
         self.init_pos = tuple(init_pos)
         self.constraints = constraints
-        assert(len(cbs.con_get_robots(constraints)) == 1)
+        assert len(cbs.con_get_robots(constraints)) == 1
         # Store as tuple, as just need as dictionary key
         self.rob_id = cbs.con_get_robots(constraints)
         self.conn_8 = conn_8

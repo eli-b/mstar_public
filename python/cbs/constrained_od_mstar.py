@@ -300,7 +300,7 @@ def find_path(obs_map, init_pos, goals, constraints, recursive=True,
               conn_8=False, full_space=False, flood_fill_policy=False,
               out_paths=None, epeastar=False, sum_of_costs=False):
     if sum_of_costs:
-        assert(epeastar)
+        assert epeastar
         o = SumOfCosts_Constrained_EPErMstar(
             obs_map, init_pos, goals, constraints, recursive=recursive,
             inflation=inflation, astar=astar, conn_8=conn_8,

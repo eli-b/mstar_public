@@ -495,7 +495,7 @@ class CBS_Planner(object):
             # Need to merge the new constraint into the existing
             # constraints, and generate new nodes, branch based on
             # whether we are considering meta-agents
-            assert(len(new_constraints) == 2)
+            assert len(new_constraints) == 2
             try:
                 if self.meta_agents:
                     # Need to update collision counts, and track the
@@ -643,9 +643,9 @@ class CBS_Planner(object):
                 t_init_pos = tuple([init_pos[bot] for bot in bots])
                 t_goals = tuple([self.goals[bot] for bot in bots])
                 if self.meta_planner == 'op_decomp':
-                    assert(False)
+                    assert False
                 elif self.meta_planner == 'epea':
-                    assert(False)
+                    assert False
                 elif self.meta_planner in ['od_rmstar', 'epermstar']:
                     # First time this set of constraints has been found.
                     # Adding the rmstar planner to sub_search, so if the
