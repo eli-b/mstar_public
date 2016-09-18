@@ -41,11 +41,10 @@ def main():
     # Have found some cases where my timing code slips up, so run in a
     # separate process that can kill runaway processes.  Also forces a
     # cleanup after every run
-    test = lambda: test_func(obs_map, init_pos, goals, args.merge_thresh,
-                             args.time_limit, args.restarts)
     try:
         res = timeout_function(
-            test, (),
+            test_func, (obs_map, init_pos, goals, args.merge_thresh,
+                        args.time_limit, args.restarts),
             args.time_limit + 10)
     except OutOfTimeError:
         print 'Out Of Time'
@@ -112,6 +111,15 @@ def read_eli_instance_file(file_name):
     return obs_map, init_pos, goals
 
 
+def inner_func(func, args, queue):
+    try:
+        queue.put(func(*args))
+    except Exception as e:
+        e_type, e_val, e_traceback = sys.exc_info()
+        e.traceback = traceback.format_tb(e_traceback)
+        queue.put(e)
+
+
 def timeout_function(func, args, timeout, run_id=None):
     """Wrapper function to run a function in subprocess with timeout
 
@@ -127,16 +135,9 @@ def timeout_function(func, args, timeout, run_id=None):
     raises any exception raised by func
     """
 
-    def inner_func(args, queue):
-        try:
-            queue.put(func(*args))
-        except Exception as e:
-            e_type, e_val, e_traceback = sys.exc_info()
-            e.traceback = traceback.format_tb(e_traceback)
-            queue.put(e)
     ret_queue = multiprocessing.Queue()
     inner_proc = multiprocessing.Process(target=inner_func,
-                                         args=(args, ret_queue))
+                                         args=(func, args, ret_queue))
     inner_proc.start()
     try:
         # Raises Queue.Empty if timeout is exceeded

@@ -26,3 +26,12 @@ Note: libgtest must be made manually.  This requires cmake.  Then run
 * `sudo mv libg* /usr/lib/`
 
 Note: The cbs, mstar, and utils python dirs should be added to PYTHONPATH
+
+Running tests
+----
+* python -m unittest cbs_test
+* python -m unittest mstar_test
+
+Solving a single bgu problem instance file from the command line
+----
+* python -c "import cbs.eli_utils;cbs.eli_utils.main()" PATH_TO_PROBLEM_INSTANC_FILE

@@ -1489,4 +1489,4 @@ if __name__ == '__main__':
         unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
     else:
         sys.argv = ['cbs_test.py']
-        unittest.main(verbosity=args.verbosity)
+        unittest.main('cbs_test', verbosity=args.verbosity)

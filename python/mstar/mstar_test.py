@@ -1007,7 +1007,7 @@ def main():
             args.tests, module=sys.modules[__name__])
         unittest.TextTestRunner(verbosity=args.verbosity).run(suite)
     else:
-        unittest.main(verbosity=args.verbosity)
+        unittest.main('mstar_test', verbosity=args.verbosity)
 
 
 if __name__ == '__main__':
