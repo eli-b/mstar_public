@@ -106,8 +106,8 @@ def read_eli_instance_file(file_name):
     goals = []
     for i in xrange(num_agents):
         vals = f.readline().split('#')[0].split(',')[1:]
-        init_pos.append((int(vals[0]), int(vals[1])))
-        goals.append((int(vals[2]), int(vals[3])))
+        goals.append((int(vals[0]), int(vals[1])))
+        init_pos.append((int(vals[2]), int(vals[3])))
     return obs_map, init_pos, goals
 
 
