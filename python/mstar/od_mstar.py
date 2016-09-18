@@ -1087,8 +1087,8 @@ class mstar_node(object):
             self.offset = 0
 
     def get_path(self):
-        """Gets the path passing through path to the goal,  assumes that
-        self is either the goal node,  or a node connected to the goal
+        """Gets the path passing through path to the goal, assumes that
+        self is either the goal node, or a node connected to the goal
         node through forwards_pointers
         """
         path = self.backtrack_path()
@@ -1099,7 +1099,7 @@ class mstar_node(object):
         forwards_ptr so that we can recover this path quickly,  only
         returns standard nodes
 
-        path - current reconstructed path for use in recusion, must
+        path - current reconstructed path for use in recursion, must
                start as None
         prev - pointer to the last node visited by backtrack_path, used
                to update forwards_ptr to record the best paths to the

@@ -599,9 +599,11 @@ class CBS_Planner(object):
                       defaults to an empty constraint
         time_limit  - available time to compute paths
 
-        returns: solution, cost
-        solution - path in the joint configuration space
+        returns: cost
         cost     - cost of solution
+
+        saves attribute: paths
+        paths - path in the joint configuration space
         """
         temp_time = timer.time()
         cost = 0

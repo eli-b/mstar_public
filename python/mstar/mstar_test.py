@@ -421,7 +421,7 @@ class TestPriorityGraph(unittest.TestCase):
 
 
 class TestrMstar(unittest.TestCase):
-    """Testing that ODrM* is  working"""
+    """Testing that ODrM* is working"""
 
     def setUp(self):
         self.world_descriptor = [[0 for i in xrange(10)] for j in xrange(10)]
@@ -518,7 +518,7 @@ class TestrMstar(unittest.TestCase):
 
 
 class TestODrMstar(unittest.TestCase):
-    """Testing that ODrM* is  working"""
+    """Testing that ODrM* is working"""
 
     def setUp(self):
         self.world_descriptor = [[0 for i in xrange(10)] for j in xrange(10)]
@@ -608,7 +608,7 @@ class TestODrMstar(unittest.TestCase):
 
 
 class TestEPEMstar(unittest.TestCase):
-    """Testing that EPEM* is  working"""
+    """Testing that EPEM* is working"""
 
     def setUp(self):
         self.world_descriptor = [[0 for i in xrange(10)] for j in xrange(10)]
