@@ -71,7 +71,7 @@ def find_path(obs_map, init_pos, goals, recursive=True, inflation=1.0,
                         from their robots
     col_set_memory    - remember previous step collision set, intended
                         to provide more efficient cached path
-                        utillization.  True by default
+                        utilization.  True by default
     """
     global global_move_list
     if (col_checker is None or isinstance(col_checker,

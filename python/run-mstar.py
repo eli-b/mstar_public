@@ -16,12 +16,12 @@ if __name__ == '__main__':
     def myworker(filepath):
         if 'output' in filepath:
             return
-        output_path = os.path.join(os.path.dirname(filepath), 'od-rmstar-results', '{}_output.txt'.format(os.path.basename(filepath)))
+        output_path = os.path.join(os.path.dirname(filepath), 'macbs-over-odrmstar-results', '{}_output.txt'.format(os.path.basename(filepath)))
         if os.path.exists(output_path):
             return
         if not os.path.exists(filepath):
             return
-        command = 'python -c "import mstar.eli_utils;mstar.eli_utils.main()" {} > {}'.format(filepath, output_path)
+        command = 'python run-macbs-over-odrmstar.py {} --merge_thresh=-17 > {}'.format(filepath, output_path)
         print 'running {}'.format(command)
         try:
             start = time.time()

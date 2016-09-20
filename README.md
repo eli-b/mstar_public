@@ -34,4 +34,6 @@ Running tests
 
 Solving a single bgu problem instance file from the command line
 ----
-* python -c "import cbs.eli_utils;cbs.eli_utils.main()" PATH_TO_PROBLEM_INSTANC_FILE
+* cd python
+* python run-macbs-over-odrmstar.py PATH_TO_PROBLEM_INSTANCE_FILE
+* python -c run-odrmstar.py PATH_TO_PROBLEM_INSTANCE_FILE

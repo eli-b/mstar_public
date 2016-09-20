@@ -5,11 +5,11 @@ Meta-agent Conflict-Based Search for Optimal Multi-Agent Path Finding by
 Guni Sharon, Roni Stern, Ariel Felner and Nathan Sturtevant
 
 Basic idea is independent planning, then check for pairwise collisions.  Branch
-into two seperate searches, which each require that one robot avoid that
+into two separate searches, which each require that one robot avoid that
 particular space-time position.  The search over the conflict tree continues
 until a set of collision free paths are found.
 
-constraints will be of the form ((robot_ids),(disallowed states,...))  where
+Constraints will be of the form ((robot_ids),(disallowed states,...))  where
 each disallowed state will have the form (time,coord,[coord2]), where the
 optional second coord indicates that this is an edge constraint.  Note that
 constraints are always expressed in the single robot space, so (x,y), not
@@ -32,7 +32,7 @@ from col_set_addition import NoSolutionError, OutOfTimeError
 
 MAX_COST = 1000000
 # Effectively defining a fake object for constraints
-# Indicies for elements of a constraint
+# Indices for elements of a constraint
 CON_ROB = 0
 CON_DISALLOWED = 1
 CON_TIME = 0

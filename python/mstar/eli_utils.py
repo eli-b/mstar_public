@@ -49,7 +49,7 @@ def main():
     print res[2]
     print res[1]
     if res[1] < 20000:
-        print print_solution(res[0])
+        print_solution(res[0])
 
 
 def test_func(obs_map, init_pos, goals, time_limit):
