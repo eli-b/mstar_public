@@ -52,7 +52,7 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool()
     signal.signal(signal.SIGINT, original_sigint_handler)
     try:
-        res = pool.map_async(myworker, gen())
+        res = pool.map_async(myworker, gen(), chunksize=1)
         res.get(60*60*24*3)
     except KeyboardInterrupt:
         pool.terminate()
