@@ -9,8 +9,6 @@ import glob
 import signal
 import sys
 
-def main():
-    pass
     
 if __name__ == '__main__':
     def myworker(filepath):
@@ -53,7 +51,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, original_sigint_handler)
     try:
         res = pool.map_async(myworker, gen(), chunksize=1)
-        res.get(60*60*24*3)
+        res.get(60 * 60 * 24 * 3)
     except KeyboardInterrupt:
         pool.terminate()
     else:

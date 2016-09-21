@@ -17,7 +17,7 @@ for filename in glob.glob(r'C:\Users\Eli\Documents\Search\Guni\CPF-experiment\bi
         with open(filename) as f:
             output = f.read()
         output_sans_prefix = output[len(']0;IPython: mstar_public/python'):]
-        if output_sans_prefix.strip() == 'Out Of Time':
+        if output_sans_prefix.strip() == 'Out Of Time' or output_sans_prefix.strip() == 'Error:':
             seconds = 300000.0
             cost = 0
         else:
